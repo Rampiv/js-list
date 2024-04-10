@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <title>skb.</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/media.css">
+    <link rel="icon" type="image/svg+xml" href="./img/header__logo.svg">
+    <script defer src="https://unpkg.com/@popperjs/core@2"></script>
+    <script defer src="https://unpkg.com/tippy.js@6"></script>
+    <script defer src="js/main.js"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header__container flex">
+            <div class="header__logo-div">
+                <a href="#" class="header__logo-link">
+                    <img src="./img/header__logo.svg" alt="Логотип" class="header__logo-img">
+                </a>
+            </div>
+            <div class="header__input-div flex">
+                <form class="header__form flex">
+                    <input type="text" placeholder="Введите запрос" id="headerForm" class="header__input">
+                </form>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="container">
+            <div class="main__div">
+                <h1 class="text-reset main__h1">Клиенты</h1>
+                <div class="main__table-block">
+                    <table class="table">
+                        <tr class="table__row">
+                            <td class="table__head table__head_arrow">ID</td>
+                            <td class="table__head-fio">
+                                <div class="table__fio-custom">
+                                    <div class="table__head table__head_arrow">Фамилия Имя Отчество</div>
+                                </div>
+                            </td>
+                            <td class="table__head table__head_arrow table__head_create">Дата и время создания</td>
+                            <td class="table__head table__head_arrow table__head_change">Последние изменения</td>
+                            <td class="table__head table__head_contacts">Контакты</td>
+                            <td class="table__head table__head_actions">Действия</td>
+                        </tr>
+                    </table>
+                    <div class="btn-block flex">
+                        <button class="btn-reset btn-block__btn" id="js-open-modal">
+                            <div>
+                                <svg class="btn-block__svg" width="23" height="16" viewBox="0 0 23 16" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M14.5 8C16.71 8 18.5 6.21 18.5 4C18.5 1.79 16.71 0 14.5 0C12.29 0 10.5 1.79 10.5 4C10.5 6.21 12.29 8 14.5 8ZM5.5 6V3H3.5V6H0.5V8H3.5V11H5.5V8H8.5V6H5.5ZM14.5 10C11.83 10 6.5 11.34 6.5 14V16H22.5V14C22.5 11.34 17.17 10 14.5 10Z"
+                                        fill="none" />
+                                </svg>
+                                <span class="btn-block__text">Добавить клиента</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Модальные окна -->
+        <div class="modal flex">
+            <div class="modal__form-container">
+                <div class="modal__container-title flex">
+                    <p class="text-reset modal__title">Новый клиент</p>
+                    <p class="modal__id"></p>
+                    <svg class="modal__cross" id="js-modal-close" width="17" height="17" viewBox="0 0 17 17" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M16.2333 1.73333L15.2666 0.766664L8.49991 7.53336L1.73324 0.766696L0.766576 1.73336L7.53324 8.50003L0.766603 15.2667L1.73327 16.2333L8.49991 9.46669L15.2666 16.2334L16.2332 15.2667L9.46657 8.50003L16.2333 1.73333Z"
+                            fill="#B0B0B0" />
+                    </svg>
+                </div>
+                <form class="form">
+                    <div class="form__item flex">
+                        <label class="form__lable form__lable-surname flex">
+                            <input class="form__input" type="text" placeholder=" " id="inputSurname">
+                            <span class="form__span">Фамилия<span class="form__lable-special">*</span></span>
+                        </label>
+                        <label class="form__lable form__lable-surname flex" id="inputName">
+                            <input class="form__input" type="text" placeholder=" ">
+                            <span class="form__span">Имя<span class="form__lable-special">*</span></span>
+                        </label>
+                        <label class="form__lable form__lable-surname flex">
+                            <input class="form__input" type="text" placeholder=" " id="inputMiddlename">
+                            <span class="form__span">Отчество</span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="form-contacts flex">
+                <div class="selectblock-container" id="selectblockcontainer">
+                    <div class="selectblock flex">
+                        <select name="contact" id="contactSelect" class="selectblock__select">
+                            <option value="phone" class="selectblock__option">Телефон</option>
+                            <option value="phone2" class="selectblock__option">Доп.телефон</option>
+                            <option value="email" class="selectblock__option">Email</option>
+                            <option value="vk" class="selectblock__option">Vk</option>
+                            <option value="facebook" class="selectblock__option">FaceBook</option>
+                        </select>
+                        <input type="text" class="selectblock__input" placeholder="Введите данные контакта">
+                        <div class="selectblock__btn-block">
+                            <button class="btn-reset selectblock__clear-btn" data-tippy-content="Удалить контакт">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M6 0C2.682 0 0 2.682 0 6C0 9.318 2.682 12 6 12C9.318 12 12 9.318 12 6C12 2.682 9.318 0 6 0ZM6 10.8C3.354 10.8 1.2 8.646 1.2 6C1.2 3.354 3.354 1.2 6 1.2C8.646 1.2 10.8 3.354 10.8 6C10.8 8.646 8.646 10.8 6 10.8ZM8.154 3L6 5.154L3.846 3L3 3.846L5.154 6L3 8.154L3.846 9L6 6.846L8.154 9L9 8.154L6.846 6L9 3.846L8.154 3Z"
+                                        fill="#B0B0B0"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-reset form-btn" id="btnAddContact">
+                    <svg class="form-btn__svg" width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_121_1688)">
+                            <path
+                                d="M8.00001 4.66667C7.63334 4.66667 7.33334 4.96667 7.33334 5.33333V7.33333H5.33334C4.96668 7.33333 4.66668 7.63333 4.66668 8C4.66668 8.36667 4.96668 8.66667 5.33334 8.66667H7.33334V10.6667C7.33334 11.0333 7.63334 11.3333 8.00001 11.3333C8.36668 11.3333 8.66668 11.0333 8.66668 10.6667V8.66667H10.6667C11.0333 8.66667 11.3333 8.36667 11.3333 8C11.3333 7.63333 11.0333 7.33333 10.6667 7.33333H8.66668V5.33333C8.66668 4.96667 8.36668 4.66667 8.00001 4.66667ZM8.00001 1.33333C4.32001 1.33333 1.33334 4.32 1.33334 8C1.33334 11.68 4.32001 14.6667 8.00001 14.6667C11.68 14.6667 14.6667 11.68 14.6667 8C14.6667 4.32 11.68 1.33333 8.00001 1.33333ZM8.00001 13.3333C5.06001 13.3333 2.66668 10.94 2.66668 8C2.66668 5.06 5.06001 2.66667 8.00001 2.66667C10.94 2.66667 13.3333 5.06 13.3333 8C13.3333 10.94 10.94 13.3333 8.00001 13.3333Z"
+                                fill="inherit" />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_121_1688">
+                                <rect width="16" height="16" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                    <span class="form-btn__span">Добавить контакт</span>
+                </button>
+            </div>
+            <div class="group-bottombtns flex">
+                <button class="btn-reset group-bottombtns__save">Сохранить</button>
+                <button class="btn-reset group-bottombtns__no">Отмена</button>
+            </div>
+        </div>
+
+
+        <!-- Подложка под модальным окном -->
+        <div class="overlay" id="overlay-modal"></div>
+    </main>
+</body>
+
+</html>
