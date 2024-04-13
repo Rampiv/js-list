@@ -459,22 +459,14 @@ body {
     width: 30%;
 }
 
-.selectblock__btn-block {
+.selectblock__clear-btn {
     position: absolute;
+    border: 1px solid #C8C5D1;
     width: 7%;
     height: 37px;
     right: 0;
     background-color: var(--grey);
     display: none;
-}
-
-.selectblock__clear-btn {
-    position: absolute;
-    display: inline;
-    left: 0;
-    border: 1px solid #C8C5D1;
-    width: 100%;
-    height: 37px;
 }
 
 .selectblock__clear-btn:hover, .selectblock__clear-btn:hover path {
