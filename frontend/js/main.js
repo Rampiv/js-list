@@ -8,12 +8,8 @@
     const modalButtonClose = document.querySelector('#js-modal-close');
     const modalButtonCansel = document.querySelector('#modalButtonCansel')
     const modalWindow = document.querySelector('#modal');
-    const inputSurname = document.querySelector('#inputSurname');
-    const inputName = document.querySelector('#inputName');
-    const inputMiddlename = document.querySelector('#inputMiddlename');
     const modalButtonAddContact = document.querySelector('#btnAddContact');
     const modalSelectContainer = document.querySelector('#modalselectcontainer');
-    // кнопки main страницы
 
     initModalWindow();
 
@@ -45,7 +41,7 @@
     }
 
     // функция добавления контактов
-    modalButtonAddContact.addEventListener('click', function (e) {
+    modalButtonAddContact.addEventListener('click', function () {
         const div = document.createElement('div');
         const select = document.createElement('select');
 
@@ -116,6 +112,7 @@
         // событие input в добавлении контакта
         let modalSelectBlockInputArray = modalSelectContainer.querySelectorAll(".selectblock__input");
         modalSelectBlockInputArray.forEach(elem => elem.addEventListener("input", function (e) {
+            elem.style.color = '#333';
             let modalSelectBlockButtonClear = elem.nextSibling;
             toggleVisible(modalSelectBlockButtonClear, !!e.target.value);
         })
