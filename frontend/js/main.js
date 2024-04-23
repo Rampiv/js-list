@@ -40,7 +40,7 @@
 
     }
 
-    // функция добавления контактов
+    // ивент добавления контактов
     modalButtonAddContact.addEventListener('click', function () {
         const div = document.createElement('div');
         const select = document.createElement('select');
@@ -128,11 +128,11 @@
     // функция добавления кнопки очистки контактов
     function toggleVisible(node, shouldShow) {
         if (shouldShow) {
-            node.style.display = 'block';  
+            node.style.display = 'block';
             tippy(node, {
                 content: 'Удалить контакт',
                 allowHTML: true,
-              });          
+            });
         } else {
             node.style.display = 'none';
         }
@@ -142,5 +142,139 @@
     function clearInput(inputNode, clearButton) {
         inputNode.value = '';
         toggleVisible(clearButton, false);
+    }
+
+    //
+    // ВЗАИМОДЕЙСТВИЕ С СЕРВЕРОМ:
+    //
+
+    const inputSurname = document.querySelector('#inputsurname');
+    const inputName = document.querySelector('#inputname');
+    const inputMiddleName = document.querySelector('#inputmiddlename');
+    const modalConactAddArray = [];
+
+
+    // добавление клиента на сервер
+    function getClientsItem() {
+        async function createClient() {
+            const response = await fetch('http://localhost:3000/api/clients', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: capFirst(inputName.value).trim(),
+                    surname: capFirst(inputSurname.value).trim(),
+                    lastName: capFirst(inputMiddleName.value).trim(),
+                    contacts: Array.from(modalConactAddArray),
+                }),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                }
+            });
+        }
+        createClient();
+    }
+
+    // функция добавления контактов в array
+    function getContacts() {
+        const selectBlockArray = Array.from(document.querySelectorAll('.selectblock'));
+        return selectBlockArray.map(elem => {
+            const select = elem.querySelector('.selectblock__select');
+            const type = select.options[select.selectedIndex].text;
+            const value = elem.querySelector('.selectblock__input').value.trim();
+            const selectObject = { type, value };
+            modalConactAddArray.push(selectObject);
+        }
+        );
+    }
+
+    // функция очиски array
+    function clearArray(array) {
+        array.length = 0;
+    }
+
+    // ивент добавления на сервер клиента
+    const modalButtonSave = document.querySelector('#modalButtonSave');
+
+    modalButtonSave.addEventListener('click', function (e) {
+        e.preventDefault();
+        clearArray(modalConactAddArray);
+        getContacts();
+        getClientsItem();
+
+
+    })
+
+    // функция отрисовки с сервера
+    const table = document.querySelector('.table');
+
+    async function renderClients(array) {
+        array.forEach(obj => {
+            const tr = document.createElement('tr');
+            const id = document.createElement('td');
+            const fio = document.createElement('td');
+            const create = document.createElement('td');
+            const change = document.createElement('td');
+            const contacts = document.createElement('td');
+            const btns = document.createElement('td');
+            const date = document.createElement('div');
+            const time = document.createElement('div');
+            const btnEdit = document.createElement('button');
+            const btnDelete = document.createElement('button');
+
+            tr.classList.add('table__body');
+            id.classList.add('table__id-width', 'table__body-common', 'color-grey');
+            fio.classList.add('table__fio-width', 'table__body-common');
+            create.classList.add('table__create-width', 'table__body-common');
+            change.classList.add('table__change-width', 'table__body-common');
+            date.classList.add('table__body-date');
+            time.classList.add('table__body-time', 'color-grey');
+            contacts.classList.add('table__contacts-width', 'table__body-common');
+            btns.classList.add('table__actions', 'table__body-common', 'flex');
+            btnEdit.classList.add('btn-reset', 'table__btn-edit');
+            btnDelete.classList.add('btn-reset', 'table__btn-delete');
+
+            // сокращение id
+            if (obj.id.length > 6) {
+                id.textContent = obj.id.substring(0, 4) + '...';
+                tippy(id, {
+                    content: obj.id,
+                    allowHTML: true,
+                });
+            } else {
+                id.textContent = obj.id;
+            }
+
+            const fullFio = obj.surname + ' ' + obj.name + ' ' + obj.lastName;
+            fio.textContent = fullFio.trim();
+            create.textContent = obj.createdAt;
+            change.textContent = obj.updatedAt;
+            contacts.textContent = obj.contacts;
+            // рендер иконок
+            
+
+
+            btnEdit.textContent = 'Изменить';
+            btnDelete.textContent = 'Удалить'
+
+            table.append(tr);
+            tr.append(id, fio, create, change, contacts, btns)
+            create.append(date, time);
+            change.append(date, time);
+            btns.append(btnEdit, btnDelete);
+        })
+    }
+
+    async function renderTable() {
+        const response = await fetch('http://localhost:3000/api/clients', {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        })
+        const clientsList = await response.json();
+        renderClients(clientsList);
+    }
+    renderTable();
+
+    // Функция выравнивания букв
+    function capFirst(str) {
+        return str[0].toUpperCase() + str.slice(1).toLowerCase();
     }
 })()
