@@ -223,6 +223,33 @@ body {
     width: 13.2%;
 }
 
+.contacts-container {
+    padding-left: 19px;
+    padding-right: 19px;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.svg-common {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+.svg-common:hover path {
+    fill: var(--firm-dark);
+    transition: all .3s ease-in-out;
+}
+
+.phone:hover circle,.phone2:hover circle   {
+    fill: var(--firm-dark);
+    transition: all .3s ease-in-out;
+}
+
+.phone:hover path, .phone2:hover path   {
+    fill: var(--white);
+}
+
 .table__actions {
     justify-content: space-between;
 }
