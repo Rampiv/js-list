@@ -31,18 +31,31 @@
             <div class="main__div">
                 <h1 class="text-reset main__h1">Клиенты</h1>
                 <div class="main__table-block">
-                    <table class="table">
-                        <tr class="table__row">
-                            <td class="table__head table__head_arrow">ID</td>
-                            <td class="table__head-fio">
-                                <div class="table__fio-custom">
-                                    <div class="table__head table__head_arrow">Фамилия Имя Отчество</div>
-                                </div>
+                    <table class="table" cellspacing="0">
+                        <tr>
+                            <td class="table__head table__head_arrow table__id-width">ID</td>
+                            <td class="table__head table__fio-width table__head_arrow-special">Фамилия Имя Отчество</td>
+                            <td class="table__head table__head_arrow table__create-width">Дата и время создания</td>
+                            <td class="table__head table__head_arrow table__change-width">Последние изменения</td>
+                            <td class="table__head table__contacts-width">Контакты</td>
+                            <td class="table__head table__actions-width">Действия</td>
+                        </tr>
+                        <tr class="table__body">
+                            <td class="table__id-width table__body-common color-grey">123455</td>
+                            <td class="table__fio-width table__body-common">Скворцов Денис Юрьевич</td>
+                            <td class="table__create-width table__body-common table__gap">
+                                <div class="table__body-date">21.02.2021</div>
+                                <div class="table__body-time color-grey">12:41</div>
                             </td>
-                            <td class="table__head table__head_arrow table__head_create">Дата и время создания</td>
-                            <td class="table__head table__head_arrow table__head_change">Последние изменения</td>
-                            <td class="table__head table__head_contacts">Контакты</td>
-                            <td class="table__head table__head_actions">Действия</td>
+                            <td class="table__change-width table__body-common table__gap">
+                                <div class="table__body-date">21.02.2021</div>
+                                <div class="table__body-time color-grey">14:50</div>
+                            </td>
+                            <td class="table__contacts-width table__body-common">Контакты</td>
+                            <td class="table__actions table__body-common flex">
+                                <button class="btn-reset table__btn-edit">Изменить</button>
+                                <button class="btn-reset table__btn-delete">Удалить</button>
+                            </td>
                         </tr>
                     </table>
                     <div class="btn-block flex">
@@ -80,8 +93,8 @@
                             <input class="form__input" type="text" placeholder=" " id="inputsurname">
                             <span class="form__span">Фамилия<span class="form__lable-special">*</span></span>
                         </label>
-                        <label class="form__lable form__lable-surname flex" id="inputname">
-                            <input class="form__input" type="text" placeholder=" ">
+                        <label class="form__lable form__lable-surname flex">
+                            <input class="form__input" type="text" placeholder=" " id="inputname">
                             <span class="form__span">Имя<span class="form__lable-special">*</span></span>
                         </label>
                         <label class="form__lable form__lable-surname flex">
@@ -92,6 +105,7 @@
 
                     <div class="form-contacts flex">
                         <div class="selectblock-container" id="modalselectcontainer">
+
                             <!-- <div class="selectblock flex">
                         <select name="contact" id="contactSelect" class="selectblock__select">
                             <option value="phone" class="selectblock__option">Телефон</option>
@@ -129,7 +143,8 @@
                         </button>
                     </div>
                     <div class="group-bottombtns flex">
-                        <button class="btn-reset group-bottombtns__save" id="modalButtonSave" type="submit">Сохранить</button>
+                        <button class="btn-reset group-bottombtns__save" id="modalButtonSave"
+                            type="submit">Сохранить</button>
                         <button class="btn-reset group-bottombtns__no" id="modalButtonCansel">Отмена</button>
                     </div>
                 </form>
@@ -144,8 +159,6 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="js/main.js"></script>
-    <script src="js/server.js"></script>
-
 </body>
 
 </html>

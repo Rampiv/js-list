@@ -1,3 +1,13 @@
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 @font-face {
     font-family: "OpenSans";
     src: local("OpenSans-Regular"), url("../fonts/OpenSans-Regular.ttf") format("truetype");
@@ -144,7 +154,7 @@ body {
 }
 
 .main__h1 {
-    margin-bottom: 23px;
+    margin-bottom: 26px;
     font-size: 24px;
     font-weight: 700;
     line-height: 33px;
@@ -152,12 +162,12 @@ body {
 
 /* table */
 .table {
-    width: 100%;
+    width: 1186px;
     margin-bottom: 40px;
 }
 
 .table__head {
-    padding-left: 18px;
+    padding: 0 0 7px 20px;
     font-size: 12px;
     font-weight: 400;
     line-height: 16px;
@@ -179,19 +189,20 @@ body {
     color: var(--firm);
 }
 
-.table__head_id {
+.table__id-width {
     width: 6.8%;
+    overflow: hidden;
 }
 
-.table__head-fio {
+.table__fio-width {
     width: 31.3%;
 }
 
-.table__fio-custom {
+.table__fio-custom_width {
     display: flex;
 }
 
-.table__fio-custom::after {
+.table__fio-custom_width::after {
     content: "А-Я";
     font-size: 10px;
     font-weight: 600;
@@ -200,29 +211,119 @@ body {
     transform: translateY(8%);
 }
 
-.table__head_create {
-    width: 14.8%;
+.table__create-width {
+    width: 14.7%;
 }
 
-.table__head_change {
+.table__change-width {
     width: 14.6%;
 }
 
-.table__head_contacts {
-    width: 13.5%;
+.table__contacts-width {
+    width: 13.2%;
 }
 
-.table__head_actions {
-    width: 19%;
+.table__actions {
+    justify-content: space-between;
+}
+
+.table__btn-edit {
+    display: flex;
+    justify-content: center;
+}
+
+.table__btn-edit, .table__btn-delete {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19.07px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table__btn-edit::before {
+    content: url(../img/edit.svg);
+    margin-right: 1px;
+    height: 16px;
+    width: 16px;
+}
+
+.table__btn-delete::before {
+    content: url(../img/delete.svg);
+    margin-right: 1px;
+    height: 16px;
+    width: 16px;
+}
+
+.table__btn-edit:hover, .table__btn-edit:hover path {
+    color: var(--firm-bright);
+}
+
+.table__btn-edit:active::before {
+    content: url(../img/circle-firm.svg);
+    height: 14px;
+    animation: rotate 1s linear infinite;
+}
+
+.table__btn-delete:active::before {
+    content: url(../img/circle-red.svg);
+    height: 14px;
+    animation: rotate 1s linear infinite;
 }
 
 .table__head_arrow::after {
     content: '';
-    background: url('../img/arrow_downward.svg');
+    background: url('../img/arrow_downward.svg') no-repeat;
     display: inline-block;
     width: 12px;
     height: 12px;
     transform: translateY(18%);
+}
+
+.table__head_arrow-special::after {
+    content: 'А-Я';
+    padding-left: 12px;
+    background: url('../img/arrow_downward.svg') no-repeat;
+    display: inline-block;
+    width: 29px;
+    height: 14px;
+    transform: translateY(4%);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 13.62px;
+    pointer-events: none;
+}
+
+/* внутренняя часть таблицы */
+.table__body {
+    background-color: var(--white);
+    width: 100%;
+}
+
+.table__body-common {
+    padding: 22px 20px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19.07px;
+    color: var(--black);
+}
+
+.color-grey {
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.table__body-date {
+    display: inline-block;
+    margin-right: 3px;
+}
+
+.table__body-time {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 19.07px;
 }
 
 .btn-block {
