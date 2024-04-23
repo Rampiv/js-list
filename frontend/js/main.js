@@ -249,51 +249,62 @@
             fio.textContent = fullFio.trim();
             create.textContent = obj.createdAt;
             change.textContent = obj.updatedAt;
-            // contacts.textContent = JSON.stringify(obj.contacts);
-            contactsArray = JSON.stringify(obj.contacts);
-            
-            
+
             // рендер иконок
-            function createSvgElements(contactsArray) {
-                return contactsArray.map(elem => {
-                    const { type, value } = elem;
-                    switch (type) {
-                        case 'phone':
+            async function createSvgElements() {
+                const contactsArray = obj.contacts;
+                contactsArray.map(obj => {
+                    switch (obj.type) {
+                        case `Телефон`:
                             const a = document.createElement('a');
-                            a.classList('phone', 'svg-common');
+                            a.classList.add('phone', 'svg-common');
                             a.setAttribute('href', '#');
                             contactsDiv.append(a);
                             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                            svg.setAttributeNS('width', '16');
-                            svg.setAttributeNS('height', '16');
+                            svg.setAttributeNS(null, 'width', '16');
+                            svg.setAttributeNS(null, 'height', '16');
                             svg.setAttributeNS('viewBox', 'viewBox', '0 0 16 16');
                             svg.setAttributeNS(null, 'fill', 'none');
                             svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
                             a.append(svg);
                             const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                            g.setAttributeNS('opacity', '0.7');
+                            g.setAttributeNS(null, 'opacity', '0.7');
                             svg.append(g);
-                            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                            circle.setAttributeNS('cx', '8');
-                            circle.setAttributeNS('cy', '8');
-                            circle.setAttributeNS('r', '8');
+                            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                            circle.setAttributeNS(null, 'cx', '8');
+                            circle.setAttributeNS(null, 'cy', '8');
+                            circle.setAttributeNS(null, 'r', '8');
                             circle.setAttributeNS(null, 'fill', '#9873FF');
                             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                             path.setAttributeNS(null, 'd', 'M11.56 9.50222C11.0133 9.50222 10.4844 9.41333 9.99111 9.25333C9.83556 9.2 9.66222 9.24 9.54222 9.36L8.84444 10.2356C7.58667 9.63556 6.40889 8.50222 5.78222 7.2L6.64889 6.46222C6.76889 6.33778 6.80444 6.16444 6.75556 6.00889C6.59111 5.51556 6.50667 4.98667 6.50667 4.44C6.50667 4.2 6.30667 4 6.06667 4H4.52889C4.28889 4 4 4.10667 4 4.44C4 8.56889 7.43556 12 11.56 12C11.8756 12 12 11.72 12 11.4756V9.94222C12 9.70222 11.8 9.50222 11.56 9.50222Z');
                             path.setAttributeNS(null, 'fill', 'white');
-                            g.append(circle,path);
-                            
+                            g.append(circle, path);
+
+                            tippy(a, {
+                                content: obj.value,
+                                allowHTML: true,
+                            });;
+                            console.log('phone');
+                        case 'Доп. телефон':
+                            console.log('Доп. телефон');
+                        default:
+
+                            console.log('asdas');
+
+
+
+
 
                     }
                     // const optionElem = document.createElement('option');
                     // optionElem.classList.add('selectblock__option');
                     // optionElem.innerHTML = label;
                     // optionElem.setAttribute('value', value);
-    
+
                     // return optionElem
                 })
             }
-            
+
 
 
             btnEdit.textContent = 'Изменить';
@@ -306,7 +317,7 @@
             contacts.append(contactsDiv);
             btns.append(btnEdit, btnDelete);
 
-            createSvgElements(contactsArray);
+            createSvgElements();
         })
     }
 
