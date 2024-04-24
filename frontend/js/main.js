@@ -1,5 +1,22 @@
 // !function (e) { "function" != typeof e.matches && (e.matches = e.msMatchesSelector || e.mozMatchesSelector || e.webkitMatchesSelector || function (e) { for (var t = this, o = (t.document || t.ownerDocument).querySelectorAll(e), n = 0; o[n] && o[n] !== t;)++n; return Boolean(o[n]) }), "function" != typeof e.closest && (e.closest = function (e) { for (var t = this; t && 1 === t.nodeType;) { if (t.matches(e)) return t; t = t.parentNode } return null }) }(window.Element.prototype);
 
+/** Библиотека иконок 
+ * Для получения текстового представления какой-либо иконки от туда
+ * можешь использовать например contactIcon.vk
+ * И уже добавлять его в какой-либо элемент
+ * element.innerHTML = contactIcon.vk;
+*/
+import contactIcon from './assets/icons.js';
+
+// также по этому примеру можешь попробовать вынести свой код в отдельные js файлы)
+
+// Это для демонстрации)
+console.log(contactIcon.vk);
+
+
+
+
+// А тебе тут точно нужна самовызывающаяся функция?
 (function () {
     // все кнопки
     // кнопки модального окна
@@ -155,6 +172,10 @@
 
 
     // добавление клиента на сервер
+    /*
+        глаголом get обычно обозначают "получить" что либо
+        тут больше подойдет add или post если ты отправляешь его на сервер
+    */
     function getClientsItem() {
         async function createClient() {
             const response = await fetch('http://localhost:3000/api/clients', {
