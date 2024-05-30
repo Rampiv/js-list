@@ -59,6 +59,11 @@ body {
 }
 
 /* Global */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 .list-reset {
     margin-top: 0;
     margin-bottom: 0;
@@ -150,11 +155,12 @@ body {
 
 /* main */
 tbody:before {
-    content:"@";
-    display:block;
+    content: "@";
+    display: block;
     line-height: 7px;
-    text-indent:-99999px;
+    text-indent: -99999px;
 }
+
 .main__div {
     padding: 40px 0;
 }
@@ -167,6 +173,11 @@ tbody:before {
 }
 
 /* table */
+
+.table-container {
+    overflow: auto;
+}
+
 .table {
     position: relative;
     max-width: 1186px;
@@ -271,6 +282,7 @@ tbody:before {
 
 .table__actions {
     justify-content: space-between;
+    align-items: center;
 }
 
 .table__btn-edit {
@@ -363,7 +375,8 @@ tbody:before {
 }
 
 .table__body-common {
-    padding: 20px 20px;
+    padding: 0 20px;
+    height: 60px;
     font-size: 14px;
     font-weight: 400;
     line-height: 19.07px;

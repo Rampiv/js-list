@@ -2,6 +2,7 @@ import contactIcon from './assets/icons.js';
 
 (function () {
     // кнопки 
+    const inputSearch = document.getElementById("headerForm");
     const modalButtonOpen = document.querySelector('#js-open-modal');
     const overlay = document.querySelector('#overlay-modal');
     const modalButtonClose = document.querySelector('#js-modal-close');
@@ -27,6 +28,17 @@ import contactIcon from './assets/icons.js';
         preloader.style.display = 'none';
     });
 
+    // hash
+    function hashChange (bull, id) {
+        if (bull) {
+            window.location.hash = id;
+            changeModalTitle(id);
+        } else {
+            window.location.hash = '';
+        }
+    }
+    hashChange (false);
+
 
     ////////////////////////////////////
     // Блок работы с модальным окном //
@@ -43,6 +55,8 @@ import contactIcon from './assets/icons.js';
             headers: { "Content-Type": "application/json" }
         })
         const clientsList = await response.json();
+
+        hashChange (true, id)
         modalId.classList.remove('hide');
         modalId.textContent = `ID: ${id}`;
         modalTitle.textContent = 'Изменить данные';
@@ -109,7 +123,7 @@ import contactIcon from './assets/icons.js';
     // кнопки модального окна
     function initModalWindow() {
 
-        modalButtonOpen.addEventListener('click', (e) => {
+        modalButtonOpen.addEventListener('click', () => {
             toggleModal(true);
             clearInput();
             clearContacts();
@@ -117,11 +131,15 @@ import contactIcon from './assets/icons.js';
             modalTitle.textContent = 'Новый клиент';
             modalId.textContent = '';
             modalButtonCansel.textContent = 'Отмена';
+            inCorrectText(false);
         });
 
-        modalButtonClose.addEventListener('click', (e) => {
+        modalButtonClose.addEventListener('click', () => {
             toggleModal(false);
             setTimeout(() => { rollingBackModal() }, 250);
+            clearTable();
+            renderTable();
+            hashChange (false)
         });
 
         modalButtonCansel.addEventListener('click', (e) => {
@@ -135,6 +153,7 @@ import contactIcon from './assets/icons.js';
             } else if (modalButtonCansel.textContent === 'Удалить клиента') {
                 changeDeleteModal();
             }
+            hashChange (false);
         });
     }
 
@@ -142,17 +161,26 @@ import contactIcon from './assets/icons.js';
     const modalButtonSave = document.querySelector('#modalButtonSave');
     modalButtonSave.addEventListener('click', function (e) {
         e.preventDefault();
-
-        const necessarilyInputs = document.querySelectorAll('.form__lable-necessarily');
-        necessarilyInputs.forEach(element => {
-            const input = element.querySelector('input');
-            if (input.value == '') {
-                toggleColor(true, element);
-                return
-            } else {
+        inCorrectText(false);
+        if (inputSurname.value.trim() === '' && inputName.value.trim() === '') {
+            toggleColor(true, inputSurname.parentElement);
+            toggleColor(true, inputName.parentElement);
+            inCorrectText(true, 'ФИО');
+        } else if (inputSurname.value.trim() && inputName.value.trim() === '') {
+            toggleColor(true, inputName.parentElement);
+            toggleColor(false, inputSurname.parentElement);
+            inCorrectText(true, 'Имя');
+        } else if (inputSurname.value.trim() === '' && inputName.value.trim()) {
+            toggleColor(true, inputSurname.parentElement);
+            toggleColor(false, inputName.parentElement);
+            inCorrectText(true, 'Фамилия');
+        } else {
+            const necessarilyInputs = document.querySelectorAll('.form__lable-necessarily');
+            necessarilyInputs.forEach(element => {
                 toggleColor(false, element);
-            }
-        })
+                inCorrectText(false);
+            })
+        }
 
         if (!document.querySelector('.form__lable_color') && modalTitle.textContent === 'Новый клиент') {
             toggleModal(false);
@@ -224,7 +252,11 @@ import contactIcon from './assets/icons.js';
             {
                 label: 'FaceBook',
                 value: 'FaceBook'
-            }
+            },
+            {
+                label: 'Другое',
+                value: 'default'
+            },
         ]
 
         const input = document.createElement('input');
@@ -247,20 +279,20 @@ import contactIcon from './assets/icons.js';
 
         // событие input в добавлении контакта
         let modalSelectBlockInputArray = modalSelectContainer.querySelectorAll(".selectblock__input");
-        modalSelectBlockInputArray.forEach(elem => elem.addEventListener("input", function (e) {
+        modalSelectBlockInputArray.forEach(elem => elem.addEventListener("input", function () {
             elem.style.color = '#333';
             let modalSelectBlockButtonClear = elem.nextSibling;
             toggleVisible(modalSelectBlockButtonClear, !!e.target.value);
             checkCorrectInput(elem.previousSibling, elem);
-
         })
         );
+
         // событие очистить input в добавлении контакта
         let modalSelectBlockButtonClearArray = modalSelectContainer.querySelectorAll(".selectblock__clear-btn");
         modalSelectBlockButtonClearArray.forEach(elem => elem.addEventListener('click', function (e) {
             e.preventDefault();
             let modalSelectBlockInput = elem.parentElement.querySelector('input');
-            modalSelectBlockInput.value = '';
+            modalSelectBlockInput.parentElement.remove()
             clearArray(modalConactAddArray);
             getContacts();
             inCorrectText(false);
@@ -292,7 +324,6 @@ import contactIcon from './assets/icons.js';
 
     // функция проверки правильности введенных контактов
     function checkCorrectInput(select, input) {
-        // console.log(select.options[select.selectedIndex].text, input.value);
         switch (select.options[select.selectedIndex].text) {
             case 'Телефон':
                 input.setAttribute('type', 'number');
@@ -322,11 +353,24 @@ import contactIcon from './assets/icons.js';
     }
 
     // функция добавления надписи ошибки
-    function inCorrectText(value) {
+    function inCorrectText(value, option) {
         if (value && document.querySelectorAll('.incorrect-text').length == 0) {
             const p = document.createElement('p');
             p.classList.add('text-reset', 'incorrect-text');
-            p.textContent = 'Ошибка: новая модель организационной деятельности предполагает независимые способы реализации поставленных обществом задач!'
+            switch (option) {
+                case 'Фамилия':
+                    p.textContent = 'Обратите внимание на поле "Фамилия". Оно обязательно к заполнению'
+                    break;
+                case 'Имя':
+                    p.textContent = 'Обратите внимание на поле "Имя". Оно обязательно к заполнению'
+                    break;
+                case 'ФИО':
+                    p.textContent = 'Обратите внимание на поля "Фамилия" и "Имя". Оно обязательно к заполнению'
+                    break;
+                default:
+                    p.textContent = 'Ошибка: новая модель организационной деятельности предполагает независимые способы реализации поставленных обществом задач!'
+                    break;
+            }
             modalFormContacts.classList.add('form__contacts-margin');
             document.querySelector('.group-bottombtns').before(p);
         } else if (!value && document.querySelectorAll('.incorrect-text').length == 1) {
@@ -340,6 +384,15 @@ import contactIcon from './assets/icons.js';
         modalSelectContainer.innerHTML = '';
     }
 
+    // ивент введения в инпуты фамилии или имени
+    inputSurname.addEventListener('input', () => {
+        inCorrectText(false);
+        toggleColor(false, inputSurname.parentElement)
+    })
+    inputName.addEventListener('input', () => {
+        inCorrectText(false);
+        toggleColor(false, inputName.parentElement)
+    })
     /////////////////////////////
     // Блок работы с таблицей //
     ///////////////////////////
@@ -347,52 +400,60 @@ import contactIcon from './assets/icons.js';
     //  Функция сортировки
     let isAscending = true;
     async function sortArray(criteria) {
-        const response = await fetch('http://localhost:3000/api/clients');
-        const clientsList = await response.json();
-        let sortArray = clientsList.sort(function (a, b) {
-            let x = a[criteria]; let y = b[criteria];
-            if (isAscending) {
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            } else {
-                return ((x > y) ? -1 : ((x < y) ? 1 : 0));
-            }
-        });
-        clearTable();
-        renderClients(sortArray);
+        try {
+            const response = await fetch('http://localhost:3000/api/clients');
+            const clientsList = await response.json();
+            let sortArray = clientsList.sort(function (a, b) {
+                let x = a[criteria]; let y = b[criteria];
+                if (isAscending) {
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                } else {
+                    return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                }
+            });
+            clearTable();
+            renderClients(sortArray);
+        } catch {
+            alert('Пробема с сервером, звоните экстрасенсам')
+        }
     }
     async function sortArrayFio() {
-        const response = await fetch('http://localhost:3000/api/clients');
-        const clientsList = await response.json();
-        let sortArray = clientsList.sort(function (a, b) {
-            let x = a.surname + ' ' + a.name + ' ' + a.lastName;
-            let y = b.surname + ' ' + b.name + ' ' + a.lastName;
-            if (isAscending) {
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-            } else {
-                return ((x > y) ? -1 : ((x < y) ? 1 : 0));
-            }
-        });
-        clearTable();
-        renderClients(sortArray);
+        try {
+            const response = await fetch('http://localhost:3000/api/clients');
+            const clientsList = await response.json();
+            let sortArray = clientsList.sort(function (a, b) {
+                let x = a.surname + ' ' + a.name + ' ' + a.lastName;
+                let y = b.surname + ' ' + b.name + ' ' + a.lastName;
+                if (isAscending) {
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                } else {
+                    return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                }
+            });
+            clearTable();
+            renderClients(sortArray);
+        } catch {
+            alert('Я не знаю, что-то сломалось, зовите мужика с монтировкой')
+        }
     }
 
     // ивенты сортировки таблицы
-    tableId.addEventListener('click', (e) => {
+    tableId.addEventListener('click', () => {
         sortArray('id');
         isAscending = !isAscending;
         rotate(tableId);
     });
-    tableFio.addEventListener('click', (e) => {
+    tableFio.addEventListener('click', () => {
         sortArrayFio();
         isAscending = !isAscending;
         rotate(tableFio);
     });
-    tableDate.addEventListener('click', (e) => {
+    tableDate.addEventListener('click', () => {
         sortArray('createdAt');
         isAscending = !isAscending;
         rotate(tableDate);
     });
-    tableChange.addEventListener('click', (e) => {
+    tableChange.addEventListener('click', () => {
         sortArray('updatedAt');
         isAscending = !isAscending;
         rotate(tableChange);
@@ -444,32 +505,40 @@ import contactIcon from './assets/icons.js';
     // добавление клиента на сервер
     function addClientsItem() {
         async function createClient() {
-            const response = await fetch('http://localhost:3000/api/clients', {
-                method: 'POST',
-                body: JSON.stringify({
-                    name: capFirst(inputName.value),
-                    surname: capFirst(inputSurname.value),
-                    lastName: capFirst(inputMiddleName.value),
-                    contacts: Array.from(modalConactAddArray).slice(0, 6),
-                }),
-                headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                }
-            });
+            try {
+                const response = await fetch('http://localhost:3000/api/clients', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        name: capFirst(inputName.value),
+                        surname: capFirst(inputSurname.value),
+                        lastName: capFirst(inputMiddleName.value),
+                        contacts: Array.from(modalConactAddArray).slice(0, 6),
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8',
+                    }
+                });
+            } catch {
+                alert('Беда на 494 строке. Возможен криминал, по коням')
+            }
         }
         createClient();
 
     }
 
     async function renderTable() {
-        const response = await fetch('http://localhost:3000/api/clients', {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        })
-        const clientsList = await response.json();
-        renderClients(clientsList);
-
+        try {
+            const response = await fetch('http://localhost:3000/api/clients', {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
+            })
+            const clientsList = await response.json();
+            renderClients(clientsList);
+        } catch (err) {
+            alert('о, это я, а значит сервер уже положили. Шаманов вызвали. Ждите')
+        }
     }
+
     renderTable();
 
     // функция отрисовки с сервера (+ кнопки изменить/удалить)
@@ -525,7 +594,7 @@ import contactIcon from './assets/icons.js';
 
 
             // функция добавления иконки
-            function createSvg(elem, className) {
+            function createSvg(elem, className, value, type) {
                 const link = document.createElement('a');
                 link.classList.add(`${className}`, 'svg-common');
                 link.setAttribute('href', '#');
@@ -533,7 +602,7 @@ import contactIcon from './assets/icons.js';
                 const svg = elem;
                 link.innerHTML = svg;
                 tippy(link, {
-                    content: obj.value,
+                    content: type + ':' + ' ' + value,
                     allowHTML: true,
                 });;
             };
@@ -543,21 +612,21 @@ import contactIcon from './assets/icons.js';
                 contactsArray.map(obj => {
                     switch (obj.type) {
                         case 'VK':
-                            createSvg(contactIcon.vk, `vk`);
+                            createSvg(contactIcon.vk, `vk`, obj.value, 'VK');
                             break;
                         case 'FaceBook':
-                            createSvg(contactIcon.fb, `fb`);
+                            createSvg(contactIcon.fb, `fb`, obj.value, 'FaceBook');
                             break;
                         case `Телефон`:
-                            createSvg(contactIcon.phone, `phone`);
+                            createSvg(contactIcon.phone, `phone`, obj.value, `Телефон`);
                             break;
-                        case 'Доп. телефон':
-                            createSvg(contactIcon.phone, `phone2`);
+                        case 'Доп.телефон':
+                            createSvg(contactIcon.phone, `phone2`, obj.value, 'Доп. телефон');
                             break;
                         case 'Email':
-                            createSvg(contactIcon.mail, `email`);
+                            createSvg(contactIcon.mail, `email`, obj.value, 'Email');
                             break;
-                        default: createSvg(contactIcon.default, `default`);
+                        default: createSvg(contactIcon.default, `default`, obj.value, 'Другое');
                             break;
                     }
                 })
@@ -584,13 +653,14 @@ import contactIcon from './assets/icons.js';
                     allowHTML: true,
                 });;
                 p.innerHTML = '+' + (array.length - 4);
+                if (p.innerHTML == 0) {
+                    linkSpecial.remove();
+                }
                 addEventSpecialSvg(linkSpecial);
             }
 
             const contactsArray = reduceContacts(obj.contacts);
 
-
-            console.log(contactsArray);
             createSvgElements(contactsArray);
 
             if (contactsArray.length >= 4) {
@@ -598,14 +668,13 @@ import contactIcon from './assets/icons.js';
             }
 
             // ивент раскрытия списка иконок
-            async function addEventSpecialSvg(link) {
-                link.addEventListener('click', (e) => {
+            function addEventSpecialSvg(link) {
+                link.addEventListener('click', () => {
                     link.parentElement.classList.add('flex-wrap')
                     contactsDiv.innerHTML = '';
                     createSvgElements(obj.contacts);
                 })
             }
-
 
             btnEdit.textContent = 'Изменить';
             btnDelete.textContent = 'Удалить'
@@ -617,7 +686,7 @@ import contactIcon from './assets/icons.js';
             contacts.append(contactsDiv);
             btns.append(btnEdit, btnDelete);
 
-            btnEdit.addEventListener('click', function (e) {
+            btnEdit.addEventListener('click', function () {
                 toggleModal(true);
                 checkContactBlock();
                 const tableRow = btnDelete.parentElement.parentElement;
@@ -625,7 +694,7 @@ import contactIcon from './assets/icons.js';
                 changeModalTitle(elemId);
             })
 
-            btnDelete.addEventListener('click', function (e) {
+            btnDelete.addEventListener('click', function () {
                 const tableRow = btnDelete.parentElement.parentElement;
                 const elemId = tableRow.querySelector('.table__id-width').id;
                 toggleModal(true);
@@ -637,25 +706,33 @@ import contactIcon from './assets/icons.js';
 
     // функция изменения данных на сервере
     async function changeClient(id) {
-        const response = await fetch(`http://localhost:3000/api/clients/${id}`, {
-            method: 'PATCH',
-            body: JSON.stringify({
-                name: capFirst(inputName.value),
-                surname: capFirst(inputSurname.value),
-                lastName: capFirst(inputMiddleName.value),
-                contacts: Array.from(modalConactAddArray).slice(0, 6),
-            }),
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            }
-        });
+        try {
+            const response = await fetch(`http://localhost:3000/api/clients/${id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    name: capFirst(inputName.value),
+                    surname: capFirst(inputSurname.value),
+                    lastName: capFirst(inputMiddleName.value),
+                    contacts: Array.from(modalConactAddArray).slice(0, 6),
+                }),
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                }
+            });
+        } catch {
+            alert('При попытке что-то изменить, мы все пошли... Кхм.. Сервер лег, сорянба')
+        }
     }
 
     // функция удаления клиента
     async function deleteClient(id) {
-        fetch(`http://localhost:3000/api/clients/${id}`, {
-            method: 'DELETE',
-        })
+        try {
+            fetch(`http://localhost:3000/api/clients/${id}`, {
+                method: 'DELETE',
+            })
+        } catch {
+            alert('Рукописи не горят!.. и не удаляются, потому что беда с сервером, см 715 строку')
+        }
     }
 
     ////////////////////////////
@@ -723,5 +800,30 @@ import contactIcon from './assets/icons.js';
         modalId.textContent = id;
     }
 
+    // функция поиска по таблице
+    function search() {
+        let filter = inputSearch.value.toUpperCase();
+        const tableBody = document.getElementById("tableBody");
+        let tr = tableBody.getElementsByTagName("tr");
+
+        for (let i = 0; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName("td");
+            for (let j = 0; j < td.length; j++) {
+                let tdata = td[j];
+                if (tdata) {
+                    if (tdata.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                        break;
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    }
+
+    inputSearch.addEventListener('input', () => {
+        setTimeout(search(), 300);
+    })
 
 })()
