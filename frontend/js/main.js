@@ -37,7 +37,6 @@ import contactIcon from './assets/icons.js';
     function hashChange(bull, id) {
         if (bull == true) {
             window.location.hash = id;
-            changeModalTitle(id);
         } else {
             window.location.hash = '';
         }
