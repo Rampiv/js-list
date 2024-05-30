@@ -26,18 +26,23 @@ import contactIcon from './assets/icons.js';
     window.addEventListener('load', function () {
         let preloader = document.getElementById('preloader');
         preloader.style.display = 'none';
+        if (window.location.hash) {
+            changeModalTitle(window.location.hash.substring(1))
+            toggleModal(true);
+        }
+
     });
 
     // hash
-    function hashChange (bull, id) {
-        if (bull) {
+    function hashChange(bull, id) {
+        if (bull == true) {
             window.location.hash = id;
             changeModalTitle(id);
         } else {
             window.location.hash = '';
         }
     }
-    hashChange (false);
+
 
 
     ////////////////////////////////////
@@ -56,7 +61,7 @@ import contactIcon from './assets/icons.js';
         })
         const clientsList = await response.json();
 
-        hashChange (true, id)
+        hashChange(true, id)
         modalId.classList.remove('hide');
         modalId.textContent = `ID: ${id}`;
         modalTitle.textContent = 'Изменить данные';
@@ -135,11 +140,11 @@ import contactIcon from './assets/icons.js';
         });
 
         modalButtonClose.addEventListener('click', () => {
+            hashChange(false);
             toggleModal(false);
             setTimeout(() => { rollingBackModal() }, 250);
             clearTable();
             renderTable();
-            hashChange (false)
         });
 
         modalButtonCansel.addEventListener('click', (e) => {
@@ -153,7 +158,6 @@ import contactIcon from './assets/icons.js';
             } else if (modalButtonCansel.textContent === 'Удалить клиента') {
                 changeDeleteModal();
             }
-            hashChange (false);
         });
     }
 
