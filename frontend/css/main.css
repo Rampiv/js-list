@@ -214,6 +214,7 @@ tbody:before {
 .table__id-width {
     max-width: 6.8%;
     width: 100%;
+    cursor: pointer;
 }
 
 .table__fio-width {
@@ -808,6 +809,11 @@ tbody:before {
 
 .flex-wrap {
     flex-wrap: wrap;
+}
+
+.idhidden {
+    position: absolute;
+    font-size: 0;
 }
 
 /* Прелоадер */

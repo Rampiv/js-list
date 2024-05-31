@@ -26,22 +26,16 @@ import contactIcon from './assets/icons.js';
     window.addEventListener('load', function () {
         let preloader = document.getElementById('preloader');
         preloader.style.display = 'none';
-        if (window.location.hash) {
-            changeModalTitle(window.location.hash.substring(1))
-            toggleModal(true);
-        }
-
     });
 
     // hash
     function hashChange(bull, id) {
-        if (bull == true) {
+        if (bull) {
             window.location.hash = id;
         } else {
             window.location.hash = '';
         }
     }
-
 
 
     ////////////////////////////////////
@@ -116,9 +110,9 @@ import contactIcon from './assets/icons.js';
         modalFormContainer.classList.remove('modal__form-container_flex');
         modalButtonCansel.textContent = 'Отмена';
         modalButtonSave.textContent = 'Сохранить';
-        const p = document.querySelector('.modaldell-text');
-        if (p) {
-            p.remove();
+        const modalDellText = document.querySelector('.modaldell-text');
+        if (modalDellText) {
+            modalDellText.remove();
         }
 
     }
@@ -139,7 +133,7 @@ import contactIcon from './assets/icons.js';
         });
 
         modalButtonClose.addEventListener('click', () => {
-            hashChange(false);
+            hashChange(false)
             toggleModal(false);
             setTimeout(() => { rollingBackModal() }, 250);
             clearTable();
@@ -157,6 +151,7 @@ import contactIcon from './assets/icons.js';
             } else if (modalButtonCansel.textContent === 'Удалить клиента') {
                 changeDeleteModal();
             }
+            hashChange(false);
         });
     }
 
@@ -407,11 +402,11 @@ import contactIcon from './assets/icons.js';
             const response = await fetch('http://localhost:3000/api/clients');
             const clientsList = await response.json();
             let sortArray = clientsList.sort(function (a, b) {
-                let x = a[criteria]; let y = b[criteria];
+                let client1 = a[criteria]; let client2 = b[criteria];
                 if (isAscending) {
-                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                    return ((client1 < client2) ? -1 : ((client1 > client2) ? 1 : 0));
                 } else {
-                    return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                    return ((client1 > client2) ? -1 : ((client1 < client2) ? 1 : 0));
                 }
             });
             clearTable();
@@ -425,12 +420,12 @@ import contactIcon from './assets/icons.js';
             const response = await fetch('http://localhost:3000/api/clients');
             const clientsList = await response.json();
             let sortArray = clientsList.sort(function (a, b) {
-                let x = a.surname + ' ' + a.name + ' ' + a.lastName;
-                let y = b.surname + ' ' + b.name + ' ' + a.lastName;
+                let client1 = a.surname + ' ' + a.name + ' ' + a.lastName;
+                let client2 = b.surname + ' ' + b.name + ' ' + a.lastName;
                 if (isAscending) {
-                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                    return ((client1 < client2) ? -1 : ((client1 > client2) ? 1 : 0));
                 } else {
-                    return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                    return ((client1 > client2) ? -1 : ((client1 < client2) ? 1 : 0));
                 }
             });
             clearTable();
@@ -549,6 +544,7 @@ import contactIcon from './assets/icons.js';
         array.forEach(obj => {
             const tr = document.createElement('tr');
             const id = document.createElement('td');
+            const idHidden = document.createElement('span')
             const fio = document.createElement('td');
             const create = document.createElement('td');
             const change = document.createElement('td');
@@ -565,6 +561,7 @@ import contactIcon from './assets/icons.js';
             tr.classList.add('table__body');
             id.classList.add('table__id-width', 'table__body-common', 'color-grey');
             id.setAttribute('id', `${obj.id}`);
+            idHidden.classList.add('idhidden');
             fio.classList.add('table__fio-width', 'table__body-common');
             create.classList.add('table__create-width', 'table__body-common');
             change.classList.add('table__change-width', 'table__body-common');
@@ -578,16 +575,26 @@ import contactIcon from './assets/icons.js';
             btnEdit.classList.add('btn-reset', 'table__btn-edit');
             btnDelete.classList.add('btn-reset', 'table__btn-delete');
 
-            // сокращение id
-            if (obj.id.length > 6) {
-                id.textContent = obj.id.substring(0, 4) + '...';
-                tippy(id, {
-                    content: obj.id,
-                    allowHTML: true,
-                });
-            } else {
-                id.textContent = obj.id;
-            }
+
+            id.textContent = obj.id.slice(0, 6);
+            tippy(id, {
+                content: 'Нажмите, чтобы скопировать ID',
+                allowHTML: true,
+            });
+
+            id.addEventListener('click', () => {
+                let str = obj.id;
+                let el = document.createElement('textarea');
+                el.value = str;
+                el.setAttribute('readonly', '');
+                el.style = { position: 'absolute', left: '-9999px' };
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            })
+
+            idHidden.textContent = obj.id;
 
             const fullFio = obj.surname + ' ' + obj.name + ' ' + obj.lastName;
             fio.textContent = fullFio.trim();
@@ -684,6 +691,7 @@ import contactIcon from './assets/icons.js';
 
             tableBody.append(tr);
             tr.append(id, fio, create, change, contacts, btns)
+            id.append(idHidden)
             create.append(createDate, createTime);
             change.append(changeDate, changeTime);
             contacts.append(contactsDiv);
